@@ -53,7 +53,7 @@ for i in tqdm(range(len(int2term))):
         print("Skipping", int2term[i])
         continue
 
-    if (model_dir / f"{i}.pkl").is_file():
+    if (not args.force_train) and (model_dir / f"{i}.pkl").is_file():
         with open(model_dir / f"{i}.pkl", 'rb') as f:
             model = pickle.load(f)
     else:
@@ -69,8 +69,6 @@ for i in tqdm(range(len(int2term))):
         recall_score(y_test, y_pred),
         f1_score(y_test, y_pred),
     ))
-    if i == 5:
-        break
 
 df_results = pd.DataFrame(results, columns=["term", "accuracy", "recall", "f1_score"])
 df_results.to_csv(args.results_csv, index=False)
